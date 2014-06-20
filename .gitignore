@@ -1,0 +1,6 @@
+.DS_Store
+data/
+doc/
+submissions/
+.Rhistory
+.Rproj.user
