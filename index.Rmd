@@ -166,13 +166,20 @@ testing <- prep(rawTesting)
 results <- doPrediction(training, testing)
 ```
 
-The accuracy on the testing set--which is my 1 - estimate of the out-sample-error--can be read from the confusion matrix object returned in the results from `doPredict`:
+The resulting confusion matrix is:
+
+```{r}
+results$confmat$table
+```
+
+The accuracy on the testing set--which is my estimate of 1 - (the out-of-sample-error)--can be read from the confusion matrix object:
 
 ```{r}
 results$confmat$overall[["Accuracy"]]
 ```
 
 So the expected out-of-sample error is ```r round(100*(1-results$confmat$overall[["Accuracy"]]), 1)``` %.
+
 
 
 [http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises]: http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises

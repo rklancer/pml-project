@@ -368,7 +368,21 @@ results &lt;- doPrediction(training, testing)
 ## Type rfNews() to see new features/changes/bug fixes.
 </code></pre>
 
-<p>The accuracy on the testing set&ndash;which is my 1 - estimate of the out-sample-error&ndash;can be read from the confusion matrix object returned in the results from <code>doPredict</code>:</p>
+<p>The resulting confusion matrix is:</p>
+
+<pre><code class="r">results$confmat$table
+</code></pre>
+
+<pre><code>##           Reference
+## Prediction    A    B    C    D    E
+##          A 1671    6    0    0    0
+##          B    2 1133    7    0    0
+##          C    0    0 1011   12    1
+##          D    0    0    8  950    2
+##          E    1    0    0    2 1079
+</code></pre>
+
+<p>The accuracy on the testing set&ndash;which is my estimate of 1 - (the out-of-sample-error)&ndash;can be read from the confusion matrix object:</p>
 
 <pre><code class="r">results$confmat$overall[[&quot;Accuracy&quot;]]
 </code></pre>
