@@ -196,36 +196,71 @@ I will use the `caret` implementation of random forests to make predictions. Thi
 
 While random forests produce a "black box", it is helpful to know that they can be used to estimate variable importance and "prototypes" (variable values that are most characteristic of a particular outcome). I have also seen it suggested to use flexible, but "black box" techniques such as random forests first, in order to get a sense of the likely upper bound of the prediction performance, then to attempt prediction with possibly less-flexible but more-interpretable models.
 
-#### Cross-validation and tuning
+#### Cross-validation and model building
 
-I use the `caret` package's `train` function to automatically perform parameter tuning on the random forest. Frequently, _k_-fold cross validation is required to assess the expected out-of-sample error rate of an algorithm during tuning. However, random forests have an additional technique for estimating the out-of-sample error rate, the [out of bag][] estimate, which has the nice property of being automatically generated during training.
+I use the `caret` package's `train` function to automatically perform parameter tuning on the random forest. In order to use cross-validation (to get honest estimates of the out-of-sample error during the model building process, before proceeding to final validation), I merely pass the appropriate `method` argument to the `trainControl` function. The one tunable parameter for random forests is the `mtry` parameter which specifies how many variables to keep for each tree (each tree is built on a randomly chosen subset of features of length `mtry`).
 
-("Internet consensus" seems to be that, in practice as well as in theory, the out-of-bag estimate is as good as the cross-validated estimate.)
-
-### Results and out-of-sample error estimate
-
-Finally, in order to estimate the out-of-sample error of the final model fit, I do the training and tuning as described above and predict outcomes for the held-out testing (validation) set. `caret`'s `confusionMatrix` compares the predicted values to the known values.
-
-(One reason to write `doPrediction` in the following way was that it made it easy to debug the complete logic of training and model validation code on small "training" and "testing" subsets of the cleaned training data first. I confirmed reasonable accuracy on those, and good out-of-bag error estimates during tuning, before proceeding to the final evaluation I show below.)
+(It's worth noting that random forests have an additional technique for estimating the out-of-sample error rate, the [out of bag][] estimate, which has the nice property of being automatically generated during training. I used oob to create to classify the 20 cases required to be subbmitted.)
 
 
 ```r
-doPrediction <- function(training, testing) {
-    # use out-of-bag estimate when tuning the random forest
-    trControl = trainControl(method = "oob")
+trainRf <- function(training) {
+    # use cross-validation
+    trControl = trainControl(method = "cv", number = 10)
     # time our results (4 cores)
     time <- system.time(fit <- train(classe ~ ., data = training, method = "rf", 
         trControl = trControl))
+    list(time = time, fit = fit)
+}
+
+trainResults <- trainRf(training)
+trainResults$time
+```
+
+```
+##    user  system elapsed 
+##  1420.3    12.8   549.0
+```
+
+
+The resulting `fit` object can be plotted, to show us how `train` varied the parameter:
+
+
+```r
+plot(trainResults$fit)
+```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14.png) 
+
+
+We can also find the estimated out-of-sample accuracy, according to the cross-validation, for the finally-selected value of `mtry`:
+
+
+```r
+with(trainResults$fit, results$Accuracy[results$mtry == bestTune$mtry[1]])
+```
+
+```
+## [1] 0.9922
+```
+
+
+
+### Results and out-of-sample error estimate
+
+Finally, in order to estimate the out-of-sample error of the final model fit, I use the trained model to predict outcomes for the held-out testing (validation) set. `caret`'s `confusionMatrix` compares the predicted values to the known values.
+
+
+```r
+validate <- function(fit, testing) {
     predictions <- predict(fit, newdata = testing)
     confmat <- confusionMatrix(data = predictions, reference = testing$classe)
-    # return the time, the fit object, our predictions on the testing set, and
-    # the confusionMatrix object
-    list(time = time, fit = fit, predictions = predictions, confmat = confmat)
+    list(predictions = predictions, confmat = confmat)
 }
 
 # when applying doPrediction to testing data, remember to prep:
 testing <- prep(rawTesting)
-results <- doPrediction(training, testing)
+validationResults <- validate(trainResults$fit, testing)
 ```
 
 
@@ -233,17 +268,17 @@ The resulting confusion matrix is:
 
 
 ```r
-results$confmat$table
+validationResults$confmat$table
 ```
 
 ```
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 1671    6    0    0    0
-##          B    2 1133    7    0    0
-##          C    0    0 1011   12    1
-##          D    0    0    8  950    2
-##          E    1    0    0    2 1079
+##          A 1672    6    0    0    0
+##          B    1 1133    7    0    1
+##          C    0    0 1009   12    1
+##          D    0    0   10  950    2
+##          E    1    0    0    2 1078
 ```
 
 
@@ -251,11 +286,11 @@ The accuracy on the testing set--which is my estimate of 1 - (the out-of-sample-
 
 
 ```r
-results$confmat$overall[["Accuracy"]]
+validationResults$confmat$overall[["Accuracy"]]
 ```
 
 ```
-## [1] 0.993
+## [1] 0.9927
 ```
 
 
