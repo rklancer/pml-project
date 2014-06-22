@@ -148,7 +148,7 @@ Finally, in order to estimate the out-of-sample error of the final model fit, I 
 
 (One reason to write `doPrediction` in the following way was that it made it easy to debug the complete logic of training and model validation code on small "training" and "testing" subsets of the cleaned training data first. I confirmed reasonable accuracy on those, and good out-of-bag error estimates during tuning, before proceeding to the final evaluation I show below.)
 
-```{r cache=TRUE}
+```{r cache=TRUE, message=FALSE}
 doPrediction <- function(training, testing) {
     # use out-of-bag estimate when tuning the random forest
     trControl = trainControl(method="oob")

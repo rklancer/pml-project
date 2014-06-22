@@ -228,12 +228,6 @@ testing <- prep(rawTesting)
 results <- doPrediction(training, testing)
 ```
 
-```
-## Loading required package: randomForest
-## randomForest 4.6-7
-## Type rfNews() to see new features/changes/bug fixes.
-```
-
 
 The resulting confusion matrix is:
 
