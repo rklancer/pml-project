@@ -186,7 +186,7 @@ hr {
 
 <h3>The Data</h3>
 
-<p>The data to be predicted are described at <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a>. Key facts: there are six participants, and each participant performed 10 repetitions of the bicep curl in each of five fashions: correctly, or incorrectly in one of four ways (by throwing out the hip, etc). The activity-quality classes are coded in the <code>classe</code> column as A, B, D, D, or E, and <code>classe</code> is what we want to predict.</p>
+<p>The data to be predicted are described at <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises</a>. Key facts: there are six participants, and each participant performed 10 repetitions of the bicep curl in each of five fashions: correctly, or incorrectly in one of four ways (by throwing out the hip, etc). The activity-quality classes are coded in the <code>classe</code> column as A, B, C, D, or E, and <code>classe</code> is what we want to predict.</p>
 
 <p>According to the associated <a href="http://groupware.les.inf.puc-rio.br/work.jsf?p1=11201">paper</a> the data in the provided dataset are sensor readings recorded at 45Hz by inertial measurement units located at the users&#39; glove, armband, lumbar belt, and on the dumbbell itself. The IMU measures 3 degrees of freedom each from its accelerometer, gyroscope, and magnetometer. This amounts to 36 raw variables recorded 45 times a second during the activity.</p>
 
@@ -338,7 +338,7 @@ hist(mUpperTri, main = &quot;Histogram of all column-column correlations&quot;)
 
 <p>I use the <code>caret</code> package&#39;s <code>train</code> function to automatically perform parameter tuning on the random forest. In order to use cross-validation (to get honest estimates of the out-of-sample error during the model building process, before proceeding to final validation), I merely pass the appropriate <code>method</code> argument to the <code>trainControl</code> function. The one tunable parameter for random forests is the <code>mtry</code> parameter which specifies how many variables to keep for each tree (each tree is built on a randomly chosen subset of features of length <code>mtry</code>).</p>
 
-<p>(It&#39;s worth noting that random forests have an additional technique for estimating the out-of-sample error rate, the <a href="http://www.stat.berkeley.edu/%7Ebreiman/RandomForests/cc_home.htm#oober">out of bag</a> estimate, which has the nice property of being automatically generated during training. I used oob to create to classify the 20 cases required to be subbmitted.)</p>
+<p>(It&#39;s worth noting that random forests have an additional technique for estimating the out-of-sample error rate, the <a href="http://www.stat.berkeley.edu/%7Ebreiman/RandomForests/cc_home.htm#oober">out of bag</a> estimate, which has the nice property of being automatically generated during training. I used oob to select a model when classifying the 20 cases required to be submitted, before creating this writeup which uses cross-validation instead.)</p>
 
 <pre><code class="r">trainRf &lt;- function(training) {
     # use cross-validation

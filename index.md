@@ -8,7 +8,7 @@ Predicting Activity-Quality Class in the Ugulino, Velloso, and Fuks Weightliftin
 
 ### The Data
 
-The data to be predicted are described at [http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises][]. Key facts: there are six participants, and each participant performed 10 repetitions of the bicep curl in each of five fashions: correctly, or incorrectly in one of four ways (by throwing out the hip, etc). The activity-quality classes are coded in the `classe` column as A, B, D, D, or E, and `classe` is what we want to predict.
+The data to be predicted are described at [http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises][]. Key facts: there are six participants, and each participant performed 10 repetitions of the bicep curl in each of five fashions: correctly, or incorrectly in one of four ways (by throwing out the hip, etc). The activity-quality classes are coded in the `classe` column as A, B, C, D, or E, and `classe` is what we want to predict.
 
 According to the associated [paper][] the data in the provided dataset are sensor readings recorded at 45Hz by inertial measurement units located at the users' glove, armband, lumbar belt, and on the dumbbell itself. The IMU measures 3 degrees of freedom each from its accelerometer, gyroscope, and magnetometer. This amounts to 36 raw variables recorded 45 times a second during the activity.
 
@@ -200,7 +200,7 @@ While random forests produce a "black box", it is helpful to know that they can 
 
 I use the `caret` package's `train` function to automatically perform parameter tuning on the random forest. In order to use cross-validation (to get honest estimates of the out-of-sample error during the model building process, before proceeding to final validation), I merely pass the appropriate `method` argument to the `trainControl` function. The one tunable parameter for random forests is the `mtry` parameter which specifies how many variables to keep for each tree (each tree is built on a randomly chosen subset of features of length `mtry`).
 
-(It's worth noting that random forests have an additional technique for estimating the out-of-sample error rate, the [out of bag][] estimate, which has the nice property of being automatically generated during training. I used oob to create to classify the 20 cases required to be subbmitted.)
+(It's worth noting that random forests have an additional technique for estimating the out-of-sample error rate, the [out of bag][] estimate, which has the nice property of being automatically generated during training. I used oob to select a model when classifying the 20 cases required to be submitted, before creating this writeup which uses cross-validation instead.)
 
 
 ```r

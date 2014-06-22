@@ -14,7 +14,7 @@ registerDoMC(cores=4)
 
 ### The Data
 
-The data to be predicted are described at [http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises][]. Key facts: there are six participants, and each participant performed 10 repetitions of the bicep curl in each of five fashions: correctly, or incorrectly in one of four ways (by throwing out the hip, etc). The activity-quality classes are coded in the `classe` column as A, B, D, D, or E, and `classe` is what we want to predict.
+The data to be predicted are described at [http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises][]. Key facts: there are six participants, and each participant performed 10 repetitions of the bicep curl in each of five fashions: correctly, or incorrectly in one of four ways (by throwing out the hip, etc). The activity-quality classes are coded in the `classe` column as A, B, C, D, or E, and `classe` is what we want to predict.
 
 According to the associated [paper][] the data in the provided dataset are sensor readings recorded at 45Hz by inertial measurement units located at the users' glove, armband, lumbar belt, and on the dumbbell itself. The IMU measures 3 degrees of freedom each from its accelerometer, gyroscope, and magnetometer. This amounts to 36 raw variables recorded 45 times a second during the activity.
 
