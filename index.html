@@ -333,17 +333,17 @@ hist(mUpperTri, main = &quot;Histogram of all column-column correlations&quot;)
 
 <p>While random forests produce a &ldquo;black box&rdquo;, it is helpful to know that they can be used to estimate variable importance and &ldquo;prototypes&rdquo; (variable values that are most characteristic of a particular outcome). I have also seen it suggested to use flexible, but &ldquo;black box&rdquo; techniques such as random forests first, in order to get a sense of the likely upper bound of the prediction performance, then to attempt prediction with possibly less-flexible but more-interpretable models.</p>
 
-<h4>Cross-validation and tuning.</h4>
+<h4>Cross-validation and tuning</h4>
 
 <p>I use the <code>caret</code> package&#39;s <code>train</code> function to automatically perform parameter tuning on the random forest. Frequently, <em>k</em>-fold cross validation is required to assess the expected out-of-sample error rate of an algorithm during tuning. However, random forests have an additional technique for estimating the out-of-sample error rate, the <a href="http://www.stat.berkeley.edu/%7Ebreiman/RandomForests/cc_home.htm#oober">out of bag</a> estimate, which has the nice property of being automatically generated during training.</p>
 
 <p>(&ldquo;Internet consensus&rdquo; seems to be that, in practice as well as in theory, the out-of-bag estimate is as good as the cross-validated estimate.)</p>
 
-<h3>Out-of-sample error</h3>
+<h3>Results and out-of-sample error estimate</h3>
 
 <p>Finally, in order to estimate the out-of-sample error of the final model fit, I do the training and tuning as described above and predict outcomes for the held-out testing (validation) set. <code>caret</code>&#39;s <code>confusionMatrix</code> compares the predicted values to the known values.</p>
 
-<p>(One reason to write <code>doPrediction</code> in the following way was that it made it easy to debug the complete logic of training and model validation code on small &ldquo;training&rdquo; and &ldquo;testing&rdquo; subsets of the cleaned training data first.)</p>
+<p>(One reason to write <code>doPrediction</code> in the following way was that it made it easy to debug the complete logic of training and model validation code on small &ldquo;training&rdquo; and &ldquo;testing&rdquo; subsets of the cleaned training data first. I confirmed reasonable accuracy on those, and good out-of-bag error estimates during tuning, before proceeding to the final evaluation I show below.)</p>
 
 <pre><code class="r">doPrediction &lt;- function(training, testing) {
     # use out-of-bag estimate when tuning the random forest

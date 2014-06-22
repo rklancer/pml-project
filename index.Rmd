@@ -136,17 +136,17 @@ I will use the `caret` implementation of random forests to make predictions. Thi
 
 While random forests produce a "black box", it is helpful to know that they can be used to estimate variable importance and "prototypes" (variable values that are most characteristic of a particular outcome). I have also seen it suggested to use flexible, but "black box" techniques such as random forests first, in order to get a sense of the likely upper bound of the prediction performance, then to attempt prediction with possibly less-flexible but more-interpretable models.
 
-#### Cross-validation and tuning.
+#### Cross-validation and tuning
 
 I use the `caret` package's `train` function to automatically perform parameter tuning on the random forest. Frequently, _k_-fold cross validation is required to assess the expected out-of-sample error rate of an algorithm during tuning. However, random forests have an additional technique for estimating the out-of-sample error rate, the [out of bag][] estimate, which has the nice property of being automatically generated during training.
 
 ("Internet consensus" seems to be that, in practice as well as in theory, the out-of-bag estimate is as good as the cross-validated estimate.)
 
-### Out-of-sample error
+### Results and out-of-sample error estimate
 
 Finally, in order to estimate the out-of-sample error of the final model fit, I do the training and tuning as described above and predict outcomes for the held-out testing (validation) set. `caret`'s `confusionMatrix` compares the predicted values to the known values.
 
-(One reason to write `doPrediction` in the following way was that it made it easy to debug the complete logic of training and model validation code on small "training" and "testing" subsets of the cleaned training data first.)
+(One reason to write `doPrediction` in the following way was that it made it easy to debug the complete logic of training and model validation code on small "training" and "testing" subsets of the cleaned training data first. I confirmed reasonable accuracy on those, and good out-of-bag error estimates during tuning, before proceeding to the final evaluation I show below.)
 
 ```{r cache=TRUE}
 doPrediction <- function(training, testing) {
